@@ -1,7 +1,7 @@
 {
   "name": "emoji-steg",
   "version": "1.0.0",
-  "description": "Eine TypeScript-Bibliothek für Steganographie in Emojis",
+  "description": "A TypeScript library for steganography in emojis",
   "main": "dist/emoji-steg.js",
   "types": "dist/emoji-steg.d.ts",
   "type": "module",

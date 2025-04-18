@@ -1,34 +1,34 @@
 /**
- * EmojiSteg - TypeScript-Bibliothek für Unicode-Steganographie in Emojis
+ * EmojiSteg - TypeScript library for Unicode steganography in emojis
  *
- * Diese Bibliothek erlaubt es, Text in einem Emoji zu verstecken, indem sie unsichtbare
- * Unicode-Zeichen verwendet, die direkt mit dem Emoji verbunden werden.
+ * This library allows hiding text in an emoji by using invisible
+ * Unicode characters that are directly attached to the emoji.
  */
 
-// Schnittstelle für die Optionen der Bibliothek
+// Interface for the library options
 export interface EmojiStegOptions {
-    /** Das Standard-Emoji, falls keines angegeben wird */
+    /** The default emoji if none is specified */
     defaultEmoji?: string;
-    /** Eine angepasste Map von Emojis (optional) */
+    /** A customized map of emojis (optional) */
     customEmojiCategories?: EmojiCategories;
 }
 
-// Schnittstelle für die Emoji-Kategorien
+// Interface for emoji categories
 export interface EmojiCategories {
     [category: string]: string[];
 }
 
 /**
- * Hauptklasse für die Emoji-Steganographie
+ * Main class for emoji steganography
  */
 export class EmojiSteg {
-    // Standard-Emoji, falls keines angegeben wird
+    // Default emoji if none is specified
     private defaultEmoji: string;
 
-    // Map aller verfügbaren Emojis, kategorisiert
+    // Map of all available emojis, categorized
     public emojiCategories: EmojiCategories;
 
-    // Unsichtbare Unicode-Zeichen für Steganographie
+    // Invisible Unicode characters for steganography
     private readonly invisibleChars: string[] = [
         '\u200C', // Zero-Width Non-Joiner (ZWNJ)
         '\u200D', // Zero-Width Joiner (ZWJ)
@@ -47,24 +47,24 @@ export class EmojiSteg {
         '\u206F'  // Nominal Digit Shapes
     ];
 
-    // Variationsselektoren, die die Darstellung eines Zeichens ändern können
-    // aber in den meisten Kontexten unsichtbar bleiben
+    // Variation selectors that can change the appearance of a character
+    // but remain invisible in most contexts
     private readonly variationSelectors: string[] = [
         '\uFE00', '\uFE01', '\uFE02', '\uFE03', '\uFE04', '\uFE05', '\uFE06', '\uFE07',
         '\uFE08', '\uFE09', '\uFE0A', '\uFE0B', '\uFE0C', '\uFE0D', '\uFE0E', '\uFE0F'
     ];
 
     /**
-     * Erstellt eine neue Instanz der EmojiSteg-Klasse
-     * @param options Optionale Konfigurationsoptionen
+     * Creates a new instance of the EmojiSteg class
+     * @param options Optional configuration options
      */
     constructor(options?: EmojiStegOptions) {
         this.defaultEmoji = options?.defaultEmoji || "🔒";
 
-        // Umfangreiche Emoji-Liste, die von iOS und Android unterstützt wird
-        // Jetzt kategorisiert in einer Map
+        // Extensive emoji list supported by iOS and Android
+        // Now categorized in a map
         this.emojiCategories = options?.customEmojiCategories || {
-            "Smileys & Emotionen": [
+            "Smileys & Emotions": [
                 "😀", "😃", "😄", "😁", "😆", "😅", "🤣", "😂", "🙂", "🙃", "😉", "😊", "😇", "🥰", "😍", "🤩", "😘", "😗", "😚", "😙",
                 "😋", "😛", "😜", "🤪", "😝", "🤑", "🤗", "🤭", "🤫", "🤔", "🤐", "🤨", "😐", "😑", "😶", "😏", "😒", "🙄", "😬", "🤥",
                 "😌", "😔", "😪", "🤤", "😴", "😷", "🤒", "🤕", "🤢", "🤮", "🤧", "🥵", "🥶", "🥴", "😵", "🤯", "🤠", "🥳", "😎", "🤓",
@@ -72,13 +72,13 @@ export class EmojiSteg {
                 "😞", "😓", "😩", "😫", "🥱", "😤", "😡", "😠", "🤬", "😈", "👿", "💀", "☠️", "💩", "🤡", "👹", "👺", "👻", "👽", "👾",
                 "🤖", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"
             ],
-            "Gesten & Menschen": [
+            "Gestures & People": [
                 "👋", "🤚", "🖐️", "✋", "🖖", "👌", "🤌", "🤏", "✌️", "🤞", "🤟", "🤘", "🤙", "👈", "👉", "👆", "🖕", "👇", "☝️", "👍",
                 "👎", "✊", "👊", "🤛", "🤜", "👏", "🙌", "👐", "🤲", "🤝", "🙏", "✍️", "💅", "🤳", "💪", "🦾", "🦿", "🦵", "🦶", "👂",
                 "🦻", "👃", "🧠", "🫀", "🫁", "🦷", "🦴", "👀", "👁️", "👅", "👄", "👶", "🧒", "👦", "👧", "🧑", "👱", "👨", "🧔", "👨‍🦰",
                 "👨‍🦱", "👨‍🦳", "👨‍🦲", "👩", "👩‍🦰", "🧑‍🦰", "👩‍🦱", "🧑‍🦱", "👩‍🦳", "🧑‍🦳", "👩‍🦲", "🧑‍🦲", "👱‍♀️", "👱‍♂️", "🧓", "👴", "👵"
             ],
-            "Tiere": [
+            "Animals": [
                 "🐵", "🐒", "🦍", "🦧", "🐶", "🐕", "🦮", "🐕‍🦺", "🐩", "🐺", "🦊", "🦝", "🐱", "🐈", "🐈‍⬛", "🦁", "🐯", "🐅", "🐆", "🐴",
                 "🐎", "🦄", "🦓", "🦌", "🦬", "🐮", "🐂", "🐃", "🐄", "🐷", "🐖", "🐗", "🐽", "🐏", "🐑", "🐐", "🐪", "🐫", "🦙", "🦒",
                 "🐘", "🦣", "🦏", "🦛", "🐭", "🐁", "🐀", "🐹", "🐰", "🐇", "🐿️", "🦫", "🦔", "🦇", "🐻", "🐻‍❄️", "🐨", "🐼", "🦥", "🦦",
@@ -86,7 +86,7 @@ export class EmojiSteg {
                 "🦚", "🦜", "🐸", "🐊", "🐢", "🦎", "🐍", "🐲", "🐉", "🦕", "🦖", "🐳", "🐋", "🐬", "🦭", "🐟", "🐠", "🐡", "🦈", "🐙",
                 "🐚", "🐌", "🦋", "🐛", "🐜", "🐝", "🪲", "🐞", "🦗", "🪳", "🕷️", "🕸️", "🦂", "🦟", "🪰", "🪱"
             ],
-            "Essen & Trinken": [
+            "Food & Drink": [
                 "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍑", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑",
                 "🍆", "🥔", "🥕", "🌽", "🌶️", "🫑", "🥒", "🥬", "🥦", "🧄", "🧅", "🍄", "🥜", "🌰", "🍞", "🥐", "🥖", "🫓", "🥨", "🥯",
                 "🥞", "🧇", "🧀", "🍖", "🍗", "🥩", "🥓", "🍔", "🍟", "🍕", "🌭", "🥪", "🌮", "🌯", "🫔", "🥙", "🧆", "🥚", "🍳", "🥘",
@@ -95,13 +95,13 @@ export class EmojiSteg {
                 "🍬", "🍭", "🍮", "🍯", "🍼", "🥛", "☕", "🫖", "🍵", "🍶", "🍾", "🍷", "🍸", "🍹", "🍺", "🍻", "🥂", "🥃", "🥤", "🧋",
                 "🧃", "🧉", "🧊"
             ],
-            "Sport & Aktivitäten": [
+            "Sports & Activities": [
                 "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🪃", "🥅", "⛳",
                 "🪁", "🏹", "🎣", "🤿", "🥊", "🥋", "🎽", "🛹", "🛼", "🛷", "⛸️", "🥌", "🎿", "⛷️", "🏂", "🪂", "🏋️", "🏋️‍♀️", "🏋️‍♂️", "🤼",
                 "🤼‍♀️", "🤼‍♂️", "🤸", "🤸‍♀️", "🤸‍♂️", "⛹️", "⛹️‍♀️", "⛹️‍♂️", "🤺", "🤾", "🤾‍♀️", "🤾‍♂️", "🏌️", "🏌️‍♀️", "🏌️‍♂️", "🏇", "🧘", "🧘‍♀️", "🧘‍♂️", "🏄",
                 "🏄‍♀️", "🏄‍♂️", "🏊", "🏊‍♀️", "🏊‍♂️", "🤽", "🤽‍♀️", "🤽‍♂️", "🚣", "🚣‍♀️", "🚣‍♂️", "🧗", "🧗‍♀️", "🧗‍♂️", "🚵", "🚵‍♀️", "🚵‍♂️", "🚴", "🚴‍♀️", "🚴‍♂️"
             ],
-            "Reisen & Orte": [
+            "Travel & Places": [
                 "🚀", "🛸", "🛰️", "🪐", "🌍", "🌎", "🌏", "🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘", "🌙", "🌚", "🌛", "🌜", "☀️",
                 "🌝", "🌞", "⭐", "🌟", "🌠", "🌌", "☁️", "⛅", "⛈️", "🌤️", "🌥️", "🌦️", "🌧️", "🌨️", "🌩️", "🌪️", "🌫️", "🌬️", "🌈", "☂️",
                 "☔", "⚡", "❄️", "☃️", "⛄", "☄️", "🔥", "💧", "🌊", "🏙️", "🌆", "🌇", "🌃", "🌉", "🏠", "🏡", "🏗️", "🏢", "🏬", "🏣",
@@ -111,7 +111,7 @@ export class EmojiSteg {
                 "🚕", "🚖", "🚗", "🚘", "🚙", "🚚", "🚛", "🚜", "🦯", "🦽", "🦼", "🛴", "🚲", "🛵", "🏍️", "🛺", "🚨", "🚥", "🚦", "🛑",
                 "🚧", "⚓", "⛵", "🛶", "🚤", "🛳️", "⛴️", "🛥️", "🚢", "✈️", "🛫", "🛬", "🪂", "💺", "🚁", "🚟", "🚠", "🚡", "🚁", "🚀"
             ],
-            "Objekte & Symbole": [
+            "Objects & Symbols": [
                 "⌚", "📱", "📲", "💻", "⌨️", "🖥️", "🖨️", "🖱️", "🖲️", "🕹️", "🗜️", "💽", "💾", "💿", "📀", "📼", "📷", "📸", "📹", "🎥",
                 "📽️", "🎞️", "📞", "☎️", "📟", "📠", "📺", "📻", "🎙️", "🎚️", "🎛️", "🧭", "⏱️", "⏲️", "⏰", "🕰️", "⌛", "⏳", "📡", "🔋",
                 "🔌", "💡", "🔦", "🕯️", "🪔", "🧯", "🛢️", "💸", "💵", "💴", "💶", "💷", "💰", "💳", "💎", "⚖️", "🪜", "🧰", "🪛", "🔧",
@@ -133,35 +133,35 @@ export class EmojiSteg {
     }
 
     /**
-     * Gibt alle Kategorienamen zurück
-     * @returns Array mit allen Kategorienamen
+     * Returns all category names
+     * @returns Array with all category names
      */
     public getCategories(): string[] {
         return Object.keys(this.emojiCategories);
     }
 
     /**
-     * Gibt alle Emojis einer bestimmten Kategorie zurück
-     * @param category - Der Name der Kategorie
-     * @returns Array mit Emojis der angegebenen Kategorie oder leeres Array, wenn Kategorie nicht existiert
+     * Returns all emojis of a specific category
+     * @param category - The name of the category
+     * @returns Array with emojis of the specified category or empty array if category doesn't exist
      */
     public getEmojisByCategory(category: string): string[] {
         return this.emojiCategories[category] || [];
     }
 
     /**
-     * Gibt ein zufälliges Emoji aus allen Kategorien zurück
-     * @returns Ein zufälliges Emoji
+     * Returns a random emoji from all categories
+     * @returns A random emoji
      */
     public getRandomEmoji(): string {
-        // Alle Kategorien als Array
+        // All categories as array
         const categories = this.getCategories();
 
-        // Wähle eine zufällige Kategorie
+        // Choose a random category
         const randomCategoryIndex = Math.floor(Math.random() * categories.length);
         const randomCategory = categories[randomCategoryIndex];
 
-        // Wähle ein zufälliges Emoji aus der Kategorie
+        // Choose a random emoji from the category
         const emojisInCategory = this.emojiCategories[randomCategory];
         const randomEmojiIndex = Math.floor(Math.random() * emojisInCategory.length);
 
@@ -169,14 +169,14 @@ export class EmojiSteg {
     }
 
     /**
-     * Gibt ein zufälliges Emoji aus einer bestimmten Kategorie zurück
-     * @param category - Der Name der Kategorie
-     * @returns Ein zufälliges Emoji aus der angegebenen Kategorie
+     * Returns a random emoji from a specific category
+     * @param category - The name of the category
+     * @returns A random emoji from the specified category
      */
     public getRandomEmojiFromCategory(category: string): string {
         const emojis = this.getEmojisByCategory(category);
         if (emojis.length === 0) {
-            return this.getRandomEmoji(); // Fallback: Zufälliges Emoji aus allen Kategorien
+            return this.getRandomEmoji(); // Fallback: Random emoji from all categories
         }
 
         const randomIndex = Math.floor(Math.random() * emojis.length);
@@ -184,27 +184,27 @@ export class EmojiSteg {
     }
 
     /**
-     * Erzeugt einen Hash-Wert aus einem Passwort und Salz
-     * @param password - Das Passwort
-     * @param salt - Das Salz (optional)
-     * @returns Ein Hash-Wert als Byte-Array
+     * Generates a hash value from a password and salt
+     * @param password - The password
+     * @param salt - The salt (optional)
+     * @returns A hash value as byte array
      * @private
      */
     private _generateKey(password: string, salt: string = 'EmojiSteg'): Uint8Array {
-        // Einfache Hash-Funktion mit mehreren Runden
+        // Simple hash function with multiple rounds
         const input = password + salt;
-        let hash = new Uint8Array(16); // 128-Bit-Schlüssel
+        let hash = new Uint8Array(16); // 128-bit key
 
-        // Befülle das Array initial mit den Zeichencodes des Inputs
+        // Initialize the array with character codes from the input
         for (let i = 0; i < input.length; i++) {
             hash[i % 16] ^= input.charCodeAt(i);
         }
 
-        // Mehrere Runden für einen besseren Hash
+        // Multiple rounds for a better hash
         for (let round = 0; round < 1000; round++) {
             const newHash = new Uint8Array(16);
             for (let i = 0; i < 16; i++) {
-                // Einfache Hash-Operation
+                // Simple hash operation
                 newHash[i] = hash[(i + 1) % 16] ^ hash[(i + 7) % 16] ^ round;
             }
             hash = newHash;
@@ -214,10 +214,10 @@ export class EmojiSteg {
     }
 
     /**
-     * Verschlüsselt einen Text mit einem Passwort
-     * @param text - Der zu verschlüsselnde Text
-     * @param password - Das Passwort
-     * @returns Die verschlüsselten Daten
+     * Encrypts text with a password
+     * @param text - The text to encrypt
+     * @param password - The password
+     * @returns The encrypted data
      * @private
      */
     private _encryptData(text: string, password: string): Uint8Array {
@@ -225,9 +225,9 @@ export class EmojiSteg {
         const textBytes = new TextEncoder().encode(text);
         const encrypted = new Uint8Array(textBytes.length);
 
-        // XOR mit dem Schlüssel und zusätzlicher Position
+        // XOR with the key and additional position
         for (let i = 0; i < textBytes.length; i++) {
-            // Verwende verschiedene Teile des Schlüssels basierend auf der Position
+            // Use different parts of the key based on position
             const keyByte = key[i % key.length];
             const positionFactor = i % 256;
             encrypted[i] = textBytes[i] ^ keyByte ^ positionFactor;
@@ -237,17 +237,17 @@ export class EmojiSteg {
     }
 
     /**
-     * Entschlüsselt Daten mit einem Passwort
-     * @param encrypted - Die verschlüsselten Daten
-     * @param password - Das Passwort
-     * @returns Der entschlüsselte Text
+     * Decrypts data with a password
+     * @param encrypted - The encrypted data
+     * @param password - The password
+     * @returns The decrypted text
      * @private
      */
     private _decryptData(encrypted: Uint8Array, password: string): string {
         const key = this._generateKey(password);
         const decrypted = new Uint8Array(encrypted.length);
 
-        // XOR mit dem Schlüssel und zusätzlicher Position (umgekehrt)
+        // XOR with the key and additional position (reversed)
         for (let i = 0; i < encrypted.length; i++) {
             const keyByte = key[i % key.length];
             const positionFactor = i % 256;
@@ -258,13 +258,13 @@ export class EmojiSteg {
     }
 
     /**
-     * Konvertiert Bytes in eine Base64-Zeichenkette
-     * @param data - Die zu konvertierenden Daten
-     * @returns Die Base64-Repräsentation
+     * Converts bytes to a Base64 string
+     * @param data - The data to convert
+     * @returns The Base64 representation
      * @private
      */
     private _bytesToBase64(data: Uint8Array): string {
-        // In modernen Browsern:
+        // In modern browsers:
         if (typeof btoa === 'function') {
             const binString = Array.from(data)
                 .map(byte => String.fromCharCode(byte))
@@ -272,12 +272,12 @@ export class EmojiSteg {
             return btoa(binString);
         }
 
-        // Für Node.js und andere Umgebungen:
+        // For Node.js and other environments:
         else if (typeof Buffer !== 'undefined') {
             return Buffer.from(data).toString('base64');
         }
 
-        // Fallback-Implementierung (für andere Umgebungen)
+        // Fallback implementation (for other environments)
         else {
             const binString = Array.from(data)
                 .map(byte => String.fromCharCode(byte))
@@ -305,13 +305,13 @@ export class EmojiSteg {
     }
 
     /**
-     * Konvertiert eine Base64-Zeichenkette zurück in Bytes
-     * @param base64 - Die Base64-Zeichenkette
-     * @returns Die dekodierten Daten
+     * Converts a Base64 string back to bytes
+     * @param base64 - The Base64 string
+     * @returns The decoded data
      * @private
      */
     private _base64ToBytes(base64: string): Uint8Array {
-        // In modernen Browsern:
+        // In modern browsers:
         if (typeof atob === 'function') {
             const binString = atob(base64);
             const bytes = new Uint8Array(binString.length);
@@ -321,17 +321,17 @@ export class EmojiSteg {
             return bytes;
         }
 
-        // Für Node.js und andere Umgebungen:
+        // For Node.js and other environments:
         else if (typeof Buffer !== 'undefined') {
             const buffer = Buffer.from(base64, 'base64');
             return new Uint8Array(buffer);
         }
 
-        // Fallback-Implementierung (für andere Umgebungen)
+        // Fallback implementation (for other environments)
         else {
             const table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-            // Entferne Padding-Zeichen
+            // Remove padding characters
             base64 = base64.replace(/=+$/, '');
 
             const binString = [];
@@ -362,26 +362,26 @@ export class EmojiSteg {
     }
 
     /**
-     * Kodiert einen binären String in eine Sequenz unsichtbarer Unicode-Zeichen
-     * @param binaryString - Ein String aus 0 und 1
-     * @returns Unsichtbare Unicode-Sequenz
+     * Encodes a binary string into a sequence of invisible Unicode characters
+     * @param binaryString - A string of 0s and 1s
+     * @returns Invisible Unicode sequence
      * @private
      */
     private _binaryToInvisibleChars(binaryString: string): string {
         let result = '';
 
-        // Konvertiere Bits zu unsichtbaren Zeichen
+        // Convert bits to invisible characters
         // 0 = Zero-Width Non-Joiner
         // 1 = Zero-Width Joiner
         for (let i = 0; i < binaryString.length; i++) {
             if (binaryString[i] === '0') {
-                result += this.invisibleChars[0]; // ZWNJ für 0
+                result += this.invisibleChars[0]; // ZWNJ for 0
             } else {
-                result += this.invisibleChars[1]; // ZWJ für 1
+                result += this.invisibleChars[1]; // ZWJ for 1
             }
 
-            // Füge gelegentlich einen Variation-Selektor hinzu, um die Muster zu variieren
-            // und die Erkennung zu erschweren
+            // Occasionally add a variation selector to vary patterns
+            // and make detection more difficult
             if (i % 8 === 7) {
                 const vsIndex = Math.floor(Math.random() * this.variationSelectors.length);
                 result += this.variationSelectors[vsIndex];
@@ -392,19 +392,19 @@ export class EmojiSteg {
     }
 
     /**
-     * Dekodiert eine Sequenz unsichtbarer Unicode-Zeichen in einen binären String
-     * @param invisibleSequence - Die unsichtbare Unicode-Sequenz
-     * @returns Binärer String aus 0 und 1
+     * Decodes a sequence of invisible Unicode characters into a binary string
+     * @param invisibleSequence - The invisible Unicode sequence
+     * @returns Binary string of 0s and 1s
      * @private
      */
     private _invisibleCharsToBinary(invisibleSequence: string): string {
         let binaryString = '';
 
-        // Extrahiere Bits aus der unsichtbaren Sequenz
+        // Extract bits from the invisible sequence
         for (let i = 0; i < invisibleSequence.length; i++) {
             const char = invisibleSequence.charAt(i);
 
-            // Überspringe Variation-Selektoren
+            // Skip variation selectors
             if (this.variationSelectors.includes(char)) {
                 continue;
             }
@@ -414,16 +414,16 @@ export class EmojiSteg {
             } else if (char === this.invisibleChars[1]) { // ZWJ
                 binaryString += '1';
             }
-            // Andere unsichtbare Zeichen werden ignoriert
+            // Other invisible characters are ignored
         }
 
         return binaryString;
     }
 
     /**
-     * Konvertiert eine Base64-Zeichenkette in eine Binärzeichenkette
-     * @param base64 - Die Base64-Zeichenkette
-     * @returns Binärzeichenkette (0 und 1)
+     * Converts a Base64 string to a binary string
+     * @param base64 - The Base64 string
+     * @returns Binary string (0s and 1s)
      * @private
      */
     private _base64ToBinary(base64: string): string {
@@ -437,13 +437,13 @@ export class EmojiSteg {
     }
 
     /**
-     * Konvertiert eine Binärzeichenkette in eine Base64-Zeichenkette
-     * @param binary - Die Binärzeichenkette
-     * @returns Base64-Zeichenkette
+     * Converts a binary string to a Base64 string
+     * @param binary - The binary string
+     * @returns Base64 string
      * @private
      */
     private _binaryToBase64(binary: string): string {
-        // Stelle sicher, dass die Länge der Binärzeichenkette ein Vielfaches von 8 ist
+        // Ensure the length of the binary string is a multiple of 8
         const paddedBinary = binary.padEnd(Math.ceil(binary.length / 8) * 8, '0');
 
         let base64 = '';
@@ -457,81 +457,81 @@ export class EmojiSteg {
     }
 
     /**
-     * Verschlüsselt einen Text und versteckt ihn in einem Emoji
-     * @param text - Der zu verschlüsselnde Text
-     * @param password - Das Passwort
-     * @param emoji - Das zu verwendende Emoji (optional)
-     * @returns Das Emoji mit verstecktem Text
+     * Encrypts text and hides it in an emoji
+     * @param text - The text to encrypt
+     * @param password - The password
+     * @param emoji - The emoji to use (optional)
+     * @returns The emoji with hidden text
      */
     public encrypt(text: string, password: string, emoji: string = this.defaultEmoji): string {
-        // Text verschlüsseln
+        // Encrypt text
         const encrypted = this._encryptData(text, password);
 
-        // In Base64 umwandeln
+        // Convert to Base64
         const base64 = this._bytesToBase64(encrypted);
 
-        // Länge kodieren (für die Entschlüsselung)
+        // Encode length (for decryption)
         const lengthBinary = base64.length.toString(2).padStart(16, '0');
 
-        // Base64 in Binär umwandeln
+        // Convert Base64 to binary
         const base64Binary = this._base64ToBinary(base64);
 
-        // Binärstring in unsichtbare Unicode-Zeichen umwandeln
+        // Convert binary string to invisible Unicode characters
         const invisibleSequence = this._binaryToInvisibleChars(lengthBinary + base64Binary);
 
-        // Emoji mit der unsichtbaren Sequenz verbinden
-        // Die unsichtbare Sequenz wird nach dem Emoji platziert
+        // Combine emoji with the invisible sequence
+        // The invisible sequence is placed after the emoji
         return emoji + invisibleSequence;
     }
 
     /**
-     * Entschlüsselt Text aus einem Emoji
-     * @param emojiMessage - Das Emoji mit verstecktem Text
-     * @param password - Das Passwort
-     * @returns Der entschlüsselte Text
+     * Decrypts text from an emoji
+     * @param emojiMessage - The emoji with hidden text
+     * @param password - The password
+     * @returns The decrypted text
      */
     public decrypt(emojiMessage: string, password: string): string {
         try {
-            // Erstes Zeichen ist das Emoji, der Rest enthält die versteckten Daten
+            // First character is the emoji, the rest contains the hidden data
             if (emojiMessage.length <= 1) {
-                return "Ungültige Nachricht. Keine versteckten Daten gefunden.";
+                return "Invalid message. No hidden data found.";
             }
 
             const emoji = emojiMessage.charAt(0);
             const invisibleSequence = emojiMessage.substring(1);
 
-            // Unsichtbare Sequenz in Binärstring umwandeln
+            // Convert invisible sequence to binary string
             const binary = this._invisibleCharsToBinary(invisibleSequence);
 
             if (binary.length < 16) {
-                return "Keine gültigen versteckten Daten gefunden.";
+                return "No valid hidden data found.";
             }
 
-            // Länge extrahieren
+            // Extract length
             const lengthBinary = binary.substring(0, 16);
             const length = parseInt(lengthBinary, 2);
 
-            // Base64-Daten extrahieren und in Bytes umwandeln
+            // Extract Base64 data and convert to bytes
             const base64Binary = binary.substring(16);
             const base64 = this._binaryToBase64(base64Binary);
 
-            // Korrekte Länge berücksichtigen (falls wir Padding hinzugefügt haben)
+            // Consider correct length (in case we added padding)
             const correctBase64 = base64.substring(0, length);
 
             const bytes = this._base64ToBytes(correctBase64);
 
-            // Bytes entschlüsseln
+            // Decrypt bytes
             return this._decryptData(bytes, password);
         } catch (error) {
             console.error("Decryption error:", error);
-            return "Entschlüsselung fehlgeschlagen. Falsches Passwort oder ungültige Nachricht.";
+            return "Decryption failed. Wrong password or invalid message.";
         }
     }
 
     /**
-     * Prüft, ob ein Emoji versteckte Daten enthält
-     * @param emojiMessage - Das zu prüfende Emoji
-     * @returns true, wenn das Emoji versteckte Daten enthält, sonst false
+     * Checks if an emoji contains hidden data
+     * @param emojiMessage - The emoji to check
+     * @returns true if the emoji contains hidden data, otherwise false
      */
     public hasHiddenData(emojiMessage: string): boolean {
         if (emojiMessage.length <= 1) {
@@ -541,18 +541,18 @@ export class EmojiSteg {
         const invisibleSequence = emojiMessage.substring(1);
         const binary = this._invisibleCharsToBinary(invisibleSequence);
 
-        // Wenn wir mindestens 16 Bits (für die Längenangabe) haben,
-        // könnten versteckte Daten vorhanden sein
+        // If we have at least 16 bits (for the length indicator),
+        // hidden data might be present
         return binary.length >= 16;
     }
 }
 
 /**
- * Eine einfache Hilfsfunktion zum schnellen Verschlüsseln von Text in einem Emoji
- * @param text - Der zu verschlüsselnde Text
- * @param password - Das Passwort
- * @param emoji - Das zu verwendende Emoji (optional)
- * @returns Das Emoji mit verstecktem Text
+ * A simple helper function for quickly encrypting text in an emoji
+ * @param text - The text to encrypt
+ * @param password - The password
+ * @param emoji - The emoji to use (optional)
+ * @returns The emoji with hidden text
  */
 export function encryptInEmoji(text: string, password: string, emoji?: string): string {
     const emojiSteg = new EmojiSteg();
@@ -560,10 +560,10 @@ export function encryptInEmoji(text: string, password: string, emoji?: string): 
 }
 
 /**
- * Eine einfache Hilfsfunktion zum schnellen Entschlüsseln von Text aus einem Emoji
- * @param emojiMessage - Das Emoji mit verstecktem Text
- * @param password - Das Passwort
- * @returns Der entschlüsselte Text
+ * A simple helper function for quickly decrypting text from an emoji
+ * @param emojiMessage - The emoji with hidden text
+ * @param password - The password
+ * @returns The decrypted text
  */
 export function decryptFromEmoji(emojiMessage: string, password: string): string {
     const emojiSteg = new EmojiSteg();

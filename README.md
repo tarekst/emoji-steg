@@ -1,129 +1,129 @@
 # emoji-steg
 
-Eine leichtgewichtige TypeScript-Bibliothek für Unicode-Steganographie in Emojis. Mit dieser Bibliothek kann Text in einem einzelnen Emoji versteckt werden, sodass der verschlüsselte Text unsichtbar ist und nur mit dem richtigen Passwort entschlüsselt werden kann.
+A lightweight TypeScript library for Unicode steganography in emojis. With this library, text can be hidden in a single emoji, making the encrypted text invisible and only decryptable with the correct password.
 
 
-## Schnellstart
+## Quick Start
 
 ```typescript
 import { EmojiSteg, encryptInEmoji, decryptFromEmoji } from 'emoji-steg';
 
-// Einfache Verwendung mit Hilfsfunktionen
-const encryptedMessage = encryptInEmoji("Geheimer Text", "meinPasswort", "🚀");
-console.log(encryptedMessage); // Ausgabe: 🚀 (mit versteckten Daten)
+// Simple usage with helper functions
+const encryptedMessage = encryptInEmoji("Secret text", "myPassword", "🚀");
+console.log(encryptedMessage); // Output: 🚀 (with hidden data)
 
-const decryptedMessage = decryptFromEmoji(encryptedMessage, "meinPasswort");
-console.log(decryptedMessage); // Ausgabe: "Geheimer Text"
+const decryptedMessage = decryptFromEmoji(encryptedMessage, "myPassword");
+console.log(decryptedMessage); // Output: "Secret text"
 ```
 
-## API-Referenz
+## API Reference
 
-### Klasse: `EmojiSteg`
+### Class: `EmojiSteg`
 
-Die Hauptklasse für Emoji-Steganographie.
+The main class for emoji steganography.
 
-#### Konstruktor
+#### Constructor
 
 ```typescript
 constructor(options?: EmojiStegOptions)
 ```
 
-Erstellt eine neue Instanz der `EmojiSteg`-Klasse.
+Creates a new instance of the `EmojiSteg` class.
 
-**Parameter:**
-- `options` (optional): Konfigurationsoptionen
-    - `defaultEmoji`: Das Standard-Emoji (Standard: "🔒")
-    - `customEmojis`: Eine benutzerdefinierte Liste von Emojis
+**Parameters:**
+- `options` (optional): Configuration options
+  - `defaultEmoji`: The default emoji (default: "🔒")
+  - `customEmojis`: A custom list of emojis
 
-#### Eigenschaften
+#### Properties
 
-- `availableEmojis`: Ein Array mit über 1000 verfügbaren Emojis, die von iOS und Android unterstützt werden
+- `availableEmojis`: An array with over 1000 available emojis that are supported by iOS and Android
 
-#### Methoden
+#### Methods
 
 ##### `encrypt(text: string, password: string, emoji?: string): string`
 
-Verschlüsselt einen Text mit einem Passwort und versteckt ihn in einem Emoji.
+Encrypts text with a password and hides it in an emoji.
 
-**Parameter:**
-- `text`: Der zu verschlüsselnde Text
-- `password`: Das Passwort für die Verschlüsselung
-- `emoji` (optional): Das Emoji, in dem der Text versteckt werden soll (Standard: das Standard-Emoji)
+**Parameters:**
+- `text`: The text to encrypt
+- `password`: The password for encryption
+- `emoji` (optional): The emoji in which the text should be hidden (default: the default emoji)
 
-**Rückgabewert:**
-- Das Emoji mit verstecktem Text
+**Return value:**
+- The emoji with hidden text
 
 ##### `decrypt(emojiMessage: string, password: string): string`
 
-Entschlüsselt eine Emoji-Nachricht mit einem Passwort.
+Decrypts an emoji message with a password.
 
-**Parameter:**
-- `emojiMessage`: Das Emoji mit verstecktem Text
-- `password`: Das Passwort für die Entschlüsselung
+**Parameters:**
+- `emojiMessage`: The emoji with hidden text
+- `password`: The password for decryption
 
-**Rückgabewert:**
-- Der entschlüsselte Text
+**Return value:**
+- The decrypted text
 
 ##### `getRandomEmoji(): string`
 
-Gibt ein zufälliges Emoji aus der verfügbaren Liste zurück.
+Returns a random emoji from the available list.
 
-**Rückgabewert:**
-- Ein zufälliges Emoji
+**Return value:**
+- A random emoji
 
 ##### `hasHiddenData(emojiMessage: string): boolean`
 
-Prüft, ob ein Emoji versteckte Daten enthält.
+Checks if an emoji contains hidden data.
 
-**Parameter:**
-- `emojiMessage`: Das zu prüfende Emoji
+**Parameters:**
+- `emojiMessage`: The emoji to check
 
-**Rückgabewert:**
-- `true`, wenn das Emoji versteckte Daten enthält, sonst `false`
+**Return value:**
+- `true` if the emoji contains hidden data, otherwise `false`
 
-### Hilfsfunktionen
+### Helper Functions
 
 #### `encryptInEmoji(text: string, password: string, emoji?: string): string`
 
-Eine Hilfsfunktion zum schnellen Verschlüsseln von Text in einem Emoji.
+A helper function for quickly encrypting text in an emoji.
 
-**Parameter:**
-- `text`: Der zu verschlüsselnde Text
-- `password`: Das Passwort für die Verschlüsselung
-- `emoji` (optional): Das Emoji, in dem der Text versteckt werden soll
+**Parameters:**
+- `text`: The text to encrypt
+- `password`: The password for encryption
+- `emoji` (optional): The emoji in which the text should be hidden
 
-**Rückgabewert:**
-- Das Emoji mit verstecktem Text
+**Return value:**
+- The emoji with hidden text
 
 #### `decryptFromEmoji(emojiMessage: string, password: string): string`
 
-Eine Hilfsfunktion zum schnellen Entschlüsseln von Text aus einem Emoji.
+A helper function for quickly decrypting text from an emoji.
 
-**Parameter:**
-- `emojiMessage`: Das Emoji mit verstecktem Text
-- `password`: Das Passwort für die Entschlüsselung
+**Parameters:**
+- `emojiMessage`: The emoji with hidden text
+- `password`: The password for decryption
 
-**Rückgabewert:**
-- Der entschlüsselte Text
+**Return value:**
+- The decrypted text
 
-## Wie es funktioniert
+## How It Works
 
-Diese Bibliothek verwendet Unicode-Steganographie, um Text in Emojis zu verstecken:
+This library uses Unicode steganography to hide text in emojis:
 
-1. **Verschlüsselung**: Der Text wird mit einem passwortbasierten Schlüssel verschlüsselt
-2. **Base64-Kodierung**: Die verschlüsselten Daten werden in Base64 umgewandelt
-3. **Binärkodierung**: Die Base64-Daten werden in Binärdaten umgewandelt
-4. **Unicode-Steganographie**: Die Binärdaten werden in unsichtbare Unicode-Zeichen (wie Zero-Width Joiner und Zero-Width Non-Joiner) kodiert
-5. **Emoji-Integration**: Die unsichtbaren Zeichen werden mit dem Emoji verbunden
+1. **Encryption**: The text is encrypted with a password-based key
+2. **Base64 Encoding**: The encrypted data is converted to Base64
+3. **Binary Encoding**: The Base64 data is converted to binary data
+4. **Unicode Steganography**: The binary data is encoded in invisible Unicode characters (such as Zero-Width Joiner and Zero-Width Non-Joiner)
+5. **Emoji Integration**: The invisible characters are combined with the emoji
 
-Das Ergebnis ist ein einzelnes Emoji, das für das bloße Auge normal aussieht, aber versteckte Daten enthält, die nur mit dem richtigen Passwort entschlüsselt werden können.
+The result is a single emoji that looks normal to the naked eye but contains hidden data that can only be decrypted with the correct password.
 
-## Sicherheitshinweise
+## Security Notes
 
-- Diese Bibliothek ist für leichte Sicherheitsanforderungen geeignet, nicht für hochsensible Daten
-- Die Sicherheit hängt maßgeblich von der Komplexität des verwendeten Passworts ab
-- Einige Plattformen oder Anwendungen könnten die unsichtbaren Unicode-Zeichen entfernen oder verändern
+- This library is suitable for light security requirements, not for highly sensitive data
+- Security depends significantly on the complexity of the password used
+- Some platforms or applications may remove or modify the invisible Unicode characters
 
-## Lizenz
+## License
 
 MIT

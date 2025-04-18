@@ -1,60 +1,60 @@
 /**
- * Beispiel-Datei zur Demonstration der verbesserten EmojiSteg-Bibliothek
+ * Example file to demonstrate the functionality
  */
 import { EmojiSteg, encryptInEmoji, decryptFromEmoji } from './emoji-steg.js';
 
-console.log('=== EmojiSteg-Bibliothek Beispiele ===');
+console.log('=== EmojiSteg Library Examples ===');
 
-// Initialisierung der EmojiSteg-Klasse
+// Initialize the EmojiSteg class
 const emojiSteg = new EmojiSteg();
-console.log('\n1. EmojiSteg-Instanz wurde erstellt.');
+console.log('\n1. EmojiSteg instance has been created.');
 
-// Verfügbare Kategorien abfragen
+// Query available categories
 const categories = emojiSteg.getCategories();
-console.log('\n2. Verfügbare Emoji-Kategorien:');
+console.log('\n2. Available emoji categories:');
 console.log(categories);
 
-// Anzahl der Emojis pro Kategorie anzeigen
-console.log('\n3. Anzahl der Emojis pro Kategorie:');
+// Display number of emojis per category
+console.log('\n3. Number of emojis per category:');
 categories.forEach(category => {
     const emojis = emojiSteg.getEmojisByCategory(category);
-    console.log(`   ${category}: ${emojis.length} Emojis`);
+    console.log(`   ${category}: ${emojis.length} emojis`);
 });
 
-// Einige Emojis aus verschiedenen Kategorien anzeigen
-console.log('\n4. Beispiel-Emojis aus jeder Kategorie:');
+// Display some emojis from different categories
+console.log('\n4. Example emojis from each category:');
 categories.forEach(category => {
     const emojis = emojiSteg.getEmojisByCategory(category);
-    const sample = emojis.slice(0, 5).join(' ');  // Zeige die ersten 5 Emojis jeder Kategorie
+    const sample = emojis.slice(0, 5).join(' ');  // Show the first 5 emojis of each category
     console.log(`   ${category}: ${sample} ...`);
 });
 
-// Zufällige Emojis generieren
-console.log('\n5. Zufällige Emojis:');
-console.log(`   Zufälliges Emoji aus allen Kategorien: ${emojiSteg.getRandomEmoji()}`);
+// Generate random emojis
+console.log('\n5. Random emojis:');
+console.log(`   Random emoji from all categories: ${emojiSteg.getRandomEmoji()}`);
 
-// Zufällige Emojis aus bestimmten Kategorien
-console.log('\n6. Zufällige Emojis aus bestimmten Kategorien:');
+// Random emojis from specific categories
+console.log('\n6. Random emojis from specific categories:');
 categories.forEach(category => {
     console.log(`   ${category}: ${emojiSteg.getRandomEmojiFromCategory(category)}`);
 });
 
-// Text verschlüsseln mit verschiedenen Emojis
-const textToEncrypt = 'Dies ist ein geheimer Text für die Steganographie-Demo.';
-const password = 'mein-sicheres-passwort';
+// Encrypt text with different emojis
+const textToEncrypt = 'This is a secret text for the steganography demo.';
+const password = 'my-secure-password';
 
-console.log('\n7. Verschlüsselung mit verschiedenen Emojis:');
+console.log('\n7. Encryption with different emojis:');
 
-// Einige Emoji-Beispiele für die Verschlüsselung
+// Some emoji examples for encryption
 const emojiExamples = [
-    '🔒', // Standard
-    '😎', // Smileys & Emotionen
-    '👍', // Gesten & Menschen
-    '🐱', // Tiere
-    '🍕', // Essen & Trinken
-    '⚽', // Sport & Aktivitäten
-    '✈️', // Reisen & Orte
-    '💡'  // Objekte & Symbole
+    '🔒', // Default
+    '😎', // Smileys & Emotions
+    '👍', // Gestures & People
+    '🐱', // Animals
+    '🍕', // Food & Drink
+    '⚽', // Sports & Activities
+    '✈️', // Travel & Places
+    '💡'  // Objects & Symbols
 ];
 
 const encryptedMessages: string[] = [];
@@ -62,60 +62,60 @@ const encryptedMessages: string[] = [];
 emojiExamples.forEach(emoji => {
     const encrypted = emojiSteg.encrypt(textToEncrypt, password, emoji);
     encryptedMessages.push(encrypted);
-    console.log(`   Mit ${emoji}: ${encrypted}`);
+    console.log(`   With ${emoji}: ${encrypted}`);
 });
 
-// Entschlüsselung der verschlüsselten Nachrichten
-console.log('\n8. Entschlüsselung der verschlüsselten Nachrichten:');
+// Decryption of encrypted messages
+console.log('\n8. Decryption of encrypted messages:');
 encryptedMessages.forEach((encryptedMessage, index) => {
     const decrypted = emojiSteg.decrypt(encryptedMessage, password);
-    console.log(`   Nachricht ${index + 1} mit ${emojiExamples[index]}: "${decrypted}"`);
+    console.log(`   Message ${index + 1} with ${emojiExamples[index]}: "${decrypted}"`);
 });
 
-// Überprüfen, ob ein Emoji versteckte Daten enthält
-console.log('\n9. Überprüfen auf versteckte Daten:');
+// Check if an emoji contains hidden data
+console.log('\n9. Check for hidden data:');
 const plainEmoji = '🔒';
-const emojiWithHiddenData = emojiSteg.encrypt('Versteckter Text', password);
+const emojiWithHiddenData = emojiSteg.encrypt('Hidden text', password);
 
-console.log(`   Enthält '${plainEmoji}' versteckte Daten? ${emojiSteg.hasHiddenData(plainEmoji)}`);
-console.log(`   Enthält '${emojiWithHiddenData.charAt(0)}...' versteckte Daten? ${emojiSteg.hasHiddenData(emojiWithHiddenData)}`);
+console.log(`   Does '${plainEmoji}' contain hidden data? ${emojiSteg.hasHiddenData(plainEmoji)}`);
+console.log(`   Does '${emojiWithHiddenData.charAt(0)}...' contain hidden data? ${emojiSteg.hasHiddenData(emojiWithHiddenData)}`);
 
-// Verwendung der Hilfsfunktionen für schnelle Verschlüsselung/Entschlüsselung
-console.log('\n10. Verwendung der Hilfsfunktionen:');
-const quickEncrypted = encryptInEmoji('Schnell verschlüsselter Text', 'einfaches-passwort', '🚀');
-console.log(`   Schnell verschlüsselt: ${quickEncrypted}`);
+// Using helper functions for quick encryption/decryption
+console.log('\n10. Using helper functions:');
+const quickEncrypted = encryptInEmoji('Quickly encrypted text', 'simple-password', '🚀');
+console.log(`   Quickly encrypted: ${quickEncrypted}`);
 
-const quickDecrypted = decryptFromEmoji(quickEncrypted, 'einfaches-passwort');
-console.log(`   Schnell entschlüsselt: "${quickDecrypted}"`);
+const quickDecrypted = decryptFromEmoji(quickEncrypted, 'simple-password');
+console.log(`   Quickly decrypted: "${quickDecrypted}"`);
 
-// Fehlerbehandlung demonstrieren
-console.log('\n11. Fehlerbehandlung:');
+// Demonstrate error handling
+console.log('\n11. Error handling:');
 
-// Falsches Passwort
-const wrongPassword = 'falsches-passwort';
+// Wrong password
+const wrongPassword = 'wrong-password';
 const decryptWithWrongPassword = emojiSteg.decrypt(encryptedMessages[0], wrongPassword);
-console.log(`   Entschlüsselung mit falschem Passwort: "${decryptWithWrongPassword}"`);
+console.log(`   Decryption with wrong password: "${decryptWithWrongPassword}"`);
 
-// Ungültige Nachricht
+// Invalid message
 const invalidMessage = '🔒';
 const decryptInvalidMessage = emojiSteg.decrypt(invalidMessage, password);
-console.log(`   Entschlüsselung einer ungültigen Nachricht: "${decryptInvalidMessage}"`);
+console.log(`   Decryption of an invalid message: "${decryptInvalidMessage}"`);
 
-// Eigene Emoji-Kategorie erstellen
-console.log('\n12. Mit benutzerdefinierten Emoji-Kategorien:');
+// Create custom emoji category
+console.log('\n12. With custom emoji categories:');
 const customEmojiSteg = new EmojiSteg({
     defaultEmoji: '🔐',
     customEmojiCategories: {
-        'Lieblingsemojis': ['😻', '🚀', '🍕', '🎮', '🌈']
+        'Favorite emojis': ['😻', '🚀', '🍕', '🎮', '🌈']
     }
 });
 
 const customCategories = customEmojiSteg.getCategories();
-console.log(`   Benutzerdefinierte Kategorien: ${customCategories}`);
-console.log(`   Emojis in 'Lieblingsemojis': ${customEmojiSteg.getEmojisByCategory('Lieblingsemojis').join(' ')}`);
+console.log(`   Custom categories: ${customCategories}`);
+console.log(`   Emojis in 'Favorite emojis': ${customEmojiSteg.getEmojisByCategory('Favorite emojis').join(' ')}`);
 
-const customEncrypted = customEmojiSteg.encrypt('Text mit benutzerdefiniertem Emoji', password);
-console.log(`   Verschlüsselt mit benutzerdefiniertem Default-Emoji: ${customEncrypted}`);
-console.log(`   Entschlüsselt: "${customEmojiSteg.decrypt(customEncrypted, password)}"`);
+const customEncrypted = customEmojiSteg.encrypt('Text with custom emoji', password);
+console.log(`   Encrypted with custom default emoji: ${customEncrypted}`);
+console.log(`   Decrypted: "${customEmojiSteg.decrypt(customEncrypted, password)}"`);
 
-console.log('\n=== Ende der Beispiele ===');
+console.log('\n=== End of examples ===');
