@@ -1,0 +1,68 @@
+# Abhängigkeiten
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.pnpm-debug.log
+
+# Build-Output
+dist/
+build/
+lib/
+out/
+*.tsbuildinfo
+
+# Umgebungsvariablen und Konfigurationen
+.env
+.env.*
+*.local
+
+# IDE und Editor-Dateien
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.sublime-*
+*.swp
+*.swo
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+
+# Betriebssystem-Dateien
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Test-Coverage
+coverage/
+.nyc_output/
+
+# Cache-Dateien
+.npm
+.eslintcache
+.stylelintcache
+.prettiercache
+
+# Logs
+logs
+*.log
+
+# Temporäre Dateien
+tmp/
+temp/
+
+# Benutzerspezifische Dateien
+.history/
+.cache/
+
+# Package-Dateien
+*.tgz
+package-lock.json
+npm-shrinkwrap.json
