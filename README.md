@@ -33,11 +33,11 @@ Creates a new instance of the `EmojiSteg` class.
 **Parameters:**
 - `options` (optional): Configuration options
   - `defaultEmoji`: The default emoji (default: "🔒")
-  - `customEmojis`: A custom list of emojis
+  - `customEmojiCategories`: A custom map of emoji categories
 
 #### Properties
 
-- `availableEmojis`: An array with over 1000 available emojis that are supported by iOS and Android
+- `emojiCategories`: A map of categorized emojis with over 1000 available emojis supported by iOS and Android
 
 #### Methods
 
@@ -64,12 +64,39 @@ Decrypts an emoji message with a password.
 **Return value:**
 - The decrypted text
 
+##### `getCategories(): string[]`
+
+Returns all available emoji categories.
+
+**Return value:**
+- Array of category names
+
+##### `getEmojisByCategory(category: string): string[]`
+
+Returns all emojis from a specific category.
+
+**Parameters:**
+- `category`: The name of the category
+
+**Return value:**
+- Array of emojis from the specified category, or empty array if category doesn't exist
+
 ##### `getRandomEmoji(): string`
 
-Returns a random emoji from the available list.
+Returns a random emoji from all available categories.
 
 **Return value:**
 - A random emoji
+
+##### `getRandomEmojiFromCategory(category: string): string`
+
+Returns a random emoji from a specific category.
+
+**Parameters:**
+- `category`: The name of the category
+
+**Return value:**
+- A random emoji from the specified category
 
 ##### `hasHiddenData(emojiMessage: string): boolean`
 
@@ -105,6 +132,42 @@ A helper function for quickly decrypting text from an emoji.
 
 **Return value:**
 - The decrypted text
+
+## Examples
+
+### Working with Emoji Categories
+
+```typescript
+import { EmojiSteg } from 'emoji-steg';
+
+const emojiSteg = new EmojiSteg();
+
+// Get all available emoji categories
+const categories = emojiSteg.getCategories();
+console.log(categories); 
+// Output: ["Smileys & Emotions", "Gestures & People", "Animals", "Food & Drink", ...]
+
+// Get emojis from a specific category
+const foodEmojis = emojiSteg.getEmojisByCategory("Food & Drink");
+console.log(foodEmojis);
+// Output: ["🍇", "🍈", "🍉", "🍊", "🍋", "🍌", ...]
+
+// Get a random emoji from a specific category
+const randomAnimal = emojiSteg.getRandomEmojiFromCategory("Animals");
+console.log(randomAnimal);
+// Output: (e.g.) "🦄"
+
+// Using a custom emoji category
+const customEmojiSteg = new EmojiSteg({
+  defaultEmoji: "🔐",
+  customEmojiCategories: {
+    "Favorites": ["🚀", "🔥", "⭐", "🎮", "🎯"]
+  }
+});
+
+console.log(customEmojiSteg.getCategories());
+// Output: ["Favorites"]
+```
 
 ## How It Works
 
