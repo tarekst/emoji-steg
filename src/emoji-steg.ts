@@ -492,13 +492,16 @@ export class EmojiSteg {
      */
     public decrypt(emojiMessage: string, password: string): string {
         try {
-            // First character is the emoji, the rest contains the hidden data
-            if (emojiMessage.length <= 1) {
+            // Split message by Unicode code points to correctly handle emojis
+            const codePoints = Array.from(emojiMessage);
+
+            // First element should be the emoji; the rest contains the hidden data
+            if (codePoints.length <= 1) {
                 return "Invalid message. No hidden data found.";
             }
 
-            const emoji = emojiMessage.charAt(0);
-            const invisibleSequence = emojiMessage.substring(1);
+            const emoji = codePoints[0];
+            const invisibleSequence = codePoints.slice(1).join('');
 
             // Convert invisible sequence to binary string
             const binary = this._invisibleCharsToBinary(invisibleSequence);
@@ -534,11 +537,12 @@ export class EmojiSteg {
      * @returns true if the emoji contains hidden data, otherwise false
      */
     public hasHiddenData(emojiMessage: string): boolean {
-        if (emojiMessage.length <= 1) {
+        const codePoints = Array.from(emojiMessage);
+        if (codePoints.length <= 1) {
             return false;
         }
 
-        const invisibleSequence = emojiMessage.substring(1);
+        const invisibleSequence = codePoints.slice(1).join('');
         const binary = this._invisibleCharsToBinary(invisibleSequence);
 
         // If we have at least 16 bits (for the length indicator),
