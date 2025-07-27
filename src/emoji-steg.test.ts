@@ -11,4 +11,12 @@ describe('EmojiSteg encryption/decryption', () => {
 
     expect(decoded).toBe(text);
   });
+
+  it('fails to decrypt with wrong password', () => {
+    const steg = new EmojiSteg();
+    const text = 'Hello world';
+    const encoded = steg.encrypt(text, 'correct');
+    const decoded = steg.decrypt(encoded, 'wrong');
+    expect(decoded).not.toBe(text);
+  });
 });
