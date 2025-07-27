@@ -5,6 +5,8 @@
  * Unicode characters that are directly attached to the emoji.
  */
 
+import { pbkdf2Sync } from 'crypto';
+
 // Interface for the library options
 export interface EmojiStegOptions {
     /** The default emoji if none is specified */
@@ -191,26 +193,9 @@ export class EmojiSteg {
      * @private
      */
     private _generateKey(password: string, salt: string = 'EmojiSteg'): Uint8Array {
-        // Simple hash function with multiple rounds
-        const input = password + salt;
-        let hash = new Uint8Array(16); // 128-bit key
-
-        // Initialize the array with character codes from the input
-        for (let i = 0; i < input.length; i++) {
-            hash[i % 16] ^= input.charCodeAt(i);
-        }
-
-        // Multiple rounds for a better hash
-        for (let round = 0; round < 1000; round++) {
-            const newHash = new Uint8Array(16);
-            for (let i = 0; i < 16; i++) {
-                // Simple hash operation
-                newHash[i] = hash[(i + 1) % 16] ^ hash[(i + 7) % 16] ^ round;
-            }
-            hash = newHash;
-        }
-
-        return hash;
+        // Derive a 128-bit key using PBKDF2 with SHA-256
+        const buffer = pbkdf2Sync(password, salt, 10000, 16, 'sha256');
+        return new Uint8Array(buffer);
     }
 
     /**
