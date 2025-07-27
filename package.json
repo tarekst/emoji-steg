@@ -8,9 +8,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "prepare": "npm run build",
-    "example": "tsc && node dist/example.js",
-    "example:dev": "tsx src/example.ts"
+    "prepare": "npm run build"
   },
   "keywords": [
     "emoji",

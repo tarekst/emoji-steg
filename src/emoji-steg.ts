@@ -3,6 +3,8 @@
  *
  * This library allows hiding text in an emoji by using invisible
  * Unicode characters that are directly attached to the emoji.
+ *
+ * @Author Tarek Steiß
  */
 
 import { pbkdf2Sync } from 'crypto';

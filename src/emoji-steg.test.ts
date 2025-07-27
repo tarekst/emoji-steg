@@ -1,12 +1,13 @@
 import { EmojiSteg } from './emoji-steg';
 
-describe('EmojiSteg encryption/decryption', () => {
+describe('EmojiSteg text encryption/decryption', () => {
   it('encrypts and decrypts a message', () => {
     const steg = new EmojiSteg();
-    const text = 'Hello world';
+    const text = 'Hello world, this is a secret message';
     const password = 'secret';
+    const emoji = '😇';
 
-    const encoded = steg.encrypt(text, password);
+    const encoded = steg.encrypt(text, password, emoji);
     const decoded = steg.decrypt(encoded, password);
 
     expect(decoded).toBe(text);
@@ -14,8 +15,10 @@ describe('EmojiSteg encryption/decryption', () => {
 
   it('fails to decrypt with wrong password', () => {
     const steg = new EmojiSteg();
-    const text = 'Hello world';
-    const encoded = steg.encrypt(text, 'correct');
+    const text = 'Hello world, this is a secret message';
+    const emoji = '😇';
+
+    const encoded = steg.encrypt(text, 'correct', emoji);
     const decoded = steg.decrypt(encoded, 'wrong');
     expect(decoded).not.toBe(text);
   });
