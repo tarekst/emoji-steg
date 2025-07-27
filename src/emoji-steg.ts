@@ -7,7 +7,6 @@
  * @Author Tarek Steiß
  */
 
-import { pbkdf2Sync } from 'crypto';
 
 // Interface for the library options
 export interface EmojiStegOptions {
@@ -195,9 +194,26 @@ export class EmojiSteg {
      * @private
      */
     private _generateKey(password: string, salt: string = 'EmojiSteg'): Uint8Array {
-        // Derive a 128-bit key using PBKDF2 with SHA-256
-        const buffer = pbkdf2Sync(password, salt, 10000, 16, 'sha256');
-        return new Uint8Array(buffer);
+        // Lightweight 128-bit key derivation compatible with browsers
+        const data = new TextEncoder().encode(password + salt);
+        let hash = 0x811c9dc5; // FNV-1a 32-bit offset basis
+
+        // FNV-1a hashing
+        for (const byte of data) {
+            hash ^= byte;
+            hash = (hash * 0x01000193) >>> 0; // multiply by FNV prime
+        }
+
+        const key = new Uint8Array(16);
+        let current = hash;
+        for (let i = 0; i < 16; i++) {
+            current ^= (current << 13);
+            current ^= (current >>> 7);
+            current ^= (current << 17);
+            key[i] = current & 0xff;
+        }
+
+        return key;
     }
 
     /**

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Steganography Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+        label {
+            display: block;
+            margin: 12px 0 4px;
+        }
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+        .row > * {
+            flex: 1;
+        }
+        #encryptResult {
+            font-size: 1.2rem;
+        }
+        section {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Emoji Steganography Demo</h1>
+
+    <section id="encrypt-section">
+        <h2>Encrypt</h2>
+        <label for="categorySelect">Category</label>
+        <select id="categorySelect"></select>
+
+        <label for="emojiSelect">Emoji</label>
+        <select id="emojiSelect"></select>
+
+        <label for="encryptText">Text to hide</label>
+        <textarea id="encryptText" rows="3"></textarea>
+
+        <label for="encryptPassword">Password</label>
+        <input type="password" id="encryptPassword">
+
+        <button id="encryptButton">Encrypt</button>
+
+        <label for="encryptResult">Result</label>
+        <div class="row">
+            <input type="text" id="encryptResult" readonly>
+            <button id="copyButton" type="button">Copy</button>
+        </div>
+    </section>
+
+    <section id="decrypt-section">
+        <h2>Decrypt</h2>
+        <label for="decryptInput">Emoji with hidden text</label>
+        <input type="text" id="decryptInput">
+
+        <label for="decryptPassword">Password</label>
+        <input type="password" id="decryptPassword">
+
+        <button id="decryptButton">Decrypt</button>
+
+        <label for="decryptResult">Decrypted text</label>
+        <textarea id="decryptResult" rows="3" readonly></textarea>
+    </section>
+</div>
+
+<script type="module">
+import { EmojiSteg } from './dist/emoji-steg.js';
+
+const steg = new EmojiSteg();
+const categorySelect = document.getElementById('categorySelect');
+const emojiSelect = document.getElementById('emojiSelect');
+
+function populateCategories() {
+    categorySelect.innerHTML = '';
+    const categories = steg.getCategories();
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+    });
+}
+
+function updateEmojiOptions() {
+    const category = categorySelect.value;
+    const emojis = steg.getEmojisByCategory(category);
+    emojiSelect.innerHTML = '';
+    emojis.forEach(e => {
+        const option = document.createElement('option');
+        option.value = e;
+        option.textContent = e;
+        emojiSelect.appendChild(option);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    populateCategories();
+    updateEmojiOptions();
+});
+
+categorySelect.addEventListener('change', updateEmojiOptions);
+
+const encryptButton = document.getElementById('encryptButton');
+const encryptText = document.getElementById('encryptText');
+const encryptPassword = document.getElementById('encryptPassword');
+const encryptResult = document.getElementById('encryptResult');
+
+encryptButton.addEventListener('click', () => {
+    const text = encryptText.value;
+    const password = encryptPassword.value;
+    const emoji = emojiSelect.value;
+    const result = steg.encrypt(text, password, emoji);
+    encryptResult.value = result;
+});
+
+const copyButton = document.getElementById('copyButton');
+copyButton.addEventListener('click', async () => {
+    if (encryptResult.value) {
+        try {
+            await navigator.clipboard.writeText(encryptResult.value);
+        } catch {
+            encryptResult.select();
+            document.execCommand('copy');
+        }
+    }
+});
+
+const decryptButton = document.getElementById('decryptButton');
+const decryptInput = document.getElementById('decryptInput');
+const decryptPassword = document.getElementById('decryptPassword');
+const decryptResult = document.getElementById('decryptResult');
+
+decryptButton.addEventListener('click', () => {
+    const emojiMessage = decryptInput.value;
+    const password = decryptPassword.value;
+    const text = steg.decrypt(emojiMessage, password);
+    decryptResult.value = text;
+});
+</script>
+</body>
+</html>
